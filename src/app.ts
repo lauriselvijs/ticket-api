@@ -3,7 +3,7 @@ import { middleware } from "./middleware/index.ts";
 import { routes } from "./routes/index.ts";
 import { config } from "./config/express.ts";
 
-export function createApp() {
+const createApp = () => {
   const app = express();
 
   app.use(express.json());
@@ -13,4 +13,6 @@ export function createApp() {
   middleware(app);
 
   return app;
-}
+};
+
+export { createApp };

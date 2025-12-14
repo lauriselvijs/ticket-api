@@ -3,6 +3,8 @@ import type { TicketStatus as TicketStatusType } from "../types/tickets.ts";
 
 const statuses = Object.values(TicketStatus);
 
-export function randomStatus(): TicketStatusType {
+const randomStatus = (): TicketStatusType => {
   return statuses[Math.floor(Math.random() * statuses.length)];
-}
+};
+
+export { randomStatus };
