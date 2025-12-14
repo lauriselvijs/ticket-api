@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "NODE_ENV=development node --env-file=.env --watch --experimental-strip-types src/index.ts",
     "start": "NODE_ENV=production node --env-file=.env --experimental-strip-types src/index.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "NODE_ENV=test MONGO_INITDB_DATABASE=tickets_test node --env-file=.env.testing --test --experimental-test-module-mocks --experimental-strip-types",
+    "test:watch": "NODE_ENV=test MONGO_INITDB_DATABASE=tickets_test node --env-file=.env.testing --test --watch --experimental-test-module-mocks --experimental-strip-types"
   },
   "license": "ISC",
   "dependencies": {
@@ -24,6 +26,7 @@
     "@types/amqplib": "^0.10.7",
     "@types/express": "^5.0",
     "@types/node": "^24.3.2",
+    "@types/supertest": "^6.0.3",
     "typescript": "^5.9"
   }
 }

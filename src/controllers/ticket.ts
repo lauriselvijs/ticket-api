@@ -1,11 +1,9 @@
-// controllers/tickets.controller.ts
-import type { NextFunction, Request, Response } from "express";
-import HttpError from "../errors/HttpError.ts";
+import { publishToRabbit } from "../config/rabbit.ts";
+import { type NextFunction, type Request, type Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { TicketRoutingKeys, TicketStatus } from "../enums/tickets.ts";
 import type { Ticket as TicketType } from "../schemas/tickets.ts";
 import { Ticket } from "../models/ticket.ts";
-import { publishToRabbit } from "../config/rabbit.ts";
 
 export const getTickets = async (
   _req: Request,
@@ -17,7 +15,9 @@ export const getTickets = async (
     if (tickets.length > 0) {
       return res.json({ tickets });
     }
-    return next(new HttpError("Tickets not found", StatusCodes.NOT_FOUND));
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ message: "Tickets not found" });
   } catch (err) {
     return next(err);
   }
@@ -34,7 +34,9 @@ export const getTicketById = async (
     if (ticket) {
       return res.json({ ticket });
     }
-    return next(new HttpError("Ticket not found", StatusCodes.NOT_FOUND));
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ message: "Ticket not found" });
   } catch (err) {
     return next(err);
   }
@@ -61,7 +63,7 @@ export const createTicket = async (
       title: ticket.title,
       status: ticket.status,
       description: ticket.description,
-      occurredAt: new Date().toISOString(),
+      created_at: new Date().toISOString(),
     });
 
     return res
@@ -83,7 +85,9 @@ export const updateTicket = async (
 
     const ticket = await Ticket.findOne({ id });
     if (!ticket) {
-      return next(new HttpError("Ticket not found", StatusCodes.NOT_FOUND));
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Ticket not found" });
     }
 
     Object.assign(ticket, { title, description, status });
@@ -94,7 +98,7 @@ export const updateTicket = async (
       title: newTicket.title,
       status: newTicket.status,
       description: newTicket.description,
-      occurredAt: new Date().toISOString(),
+      created_at: new Date().toISOString(),
     });
 
     return res.json({ message: "Ticket updated", ticket: newTicket });
@@ -116,13 +120,15 @@ export const deleteTicket = async (
       publishToRabbit(TicketRoutingKeys.DELETED, {
         id: ticket.id,
         title: ticket.title,
-        occurredAt: new Date().toISOString(),
+        created_at: new Date().toISOString(),
       });
 
       return res.json({ message: "Ticket deleted" });
     }
 
-    return next(new HttpError("Ticket not found", StatusCodes.NOT_FOUND));
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ message: "Ticket not found" });
   } catch (err) {
     return next(err);
   }

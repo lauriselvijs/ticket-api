@@ -1,20 +1,17 @@
-import express from "express";
+import { createApp } from "./app.ts";
 import { connectToMongo } from "./config/mongo.ts";
-import { middleware } from "./middleware/index.ts";
-import { routes } from "./routes/index.ts";
-import { config } from "./config/express.ts";
+import { seedTickets } from "./db/seeders/ticket.ts";
 
-const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
-app.use(express.json());
-
-config(app);
-routes(app);
-middleware(app);
+const app = createApp();
 
 connectToMongo()
-  .then(() => {
+  .then(async () => {
+    if (process.env.NODE_ENV === "development") {
+      await seedTickets(50);
+    }
+
     app.listen(PORT, () => {
       console.log(`🚀 API running on http://localhost:${PORT}`);
     });

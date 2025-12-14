@@ -5,7 +5,7 @@ export const TicketStatus = {
 } as const;
 
 export const TicketRoutingKeys = {
-  CREATED: "ticket.created",
-  UPDATED: "ticket.updated",
-  DELETED: "ticket.deleted",
+  CREATED: "tickets.created",
+  UPDATED: "tickets.updated",
+  DELETED: "tickets.deleted",
 } as const;

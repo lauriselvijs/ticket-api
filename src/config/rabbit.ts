@@ -21,28 +21,33 @@ const EXCHANGE = "tickets";
 let rabbitConn: ChannelModel | null = null;
 let rabbitChannel: ConfirmChannel | null = null;
 
-export const connectToRabbit = async (): Promise<{
-  conn: ChannelModel;
-  ch: ConfirmChannel;
-}> => {
-  if (rabbitConn && rabbitChannel) {
-    return { conn: rabbitConn, ch: rabbitChannel };
+let connecting: Promise<void> | null = null;
+
+export const connectToRabbit = async (): Promise<void> => {
+  if (connecting) {
+    await connecting;
   }
 
-  const conn = await amqplib.connect(URL);
-  const ch = await conn.createConfirmChannel();
+  connecting = (async () => {
+    const conn = await amqplib.connect(URL);
+    const ch = await conn.createConfirmChannel();
 
-  await ch.assertExchange(EXCHANGE, "topic", { durable: true });
+    conn.on("error", (err) => console.error("RabbitMQ connection error:", err));
+    conn.on("close", () => {
+      console.warn("RabbitMQ connection closed");
+      rabbitConn = null;
+      rabbitChannel = null;
+    });
 
-  conn.on("error", (e) => console.error("RabbitMQ connection error:", e));
-  conn.on("close", () => console.warn("RabbitMQ connection closed"));
+    await ch.assertExchange(EXCHANGE, "topic", { durable: true });
 
-  rabbitConn = conn;
-  rabbitChannel = ch;
+    rabbitConn = conn;
+    rabbitChannel = ch;
+  })();
 
-  console.log(`✅ RabbitMQ connected – exchange "${EXCHANGE}" ready`);
+  await connecting;
 
-  return { conn, ch };
+  connecting = null;
 };
 
 export const publishToRabbit = async (
@@ -50,28 +55,41 @@ export const publishToRabbit = async (
   message: object | string,
   opts: amqplib.Options.Publish = {}
 ): Promise<void> => {
-  if (!rabbitChannel) {
-    await connectToRabbit();
-  }
-  if (!rabbitChannel) {
-    throw new Error("❌ RabbitMQ channel not available after reconnect");
-  }
+  try {
+    if (!rabbitChannel) {
+      await connectToRabbit();
+    }
 
-  const payload =
-    typeof message === "string" ? message : JSON.stringify(message);
+    if (!rabbitChannel) {
+      throw new Error("RabbitMQ channel not available after reconnect");
+    }
 
-  const ok = rabbitChannel.publish(EXCHANGE, routingKey, Buffer.from(payload), {
-    persistent: true,
-    contentType: "application/json",
-    timestamp: Date.now(),
-    ...opts,
-  });
+    const payload =
+      typeof message === "string" ? message : JSON.stringify(message);
 
-  if (!ok) {
-    console.warn("⚠️ RabbitMQ publish buffer is full");
-  } else {
-    console.log(
-      `📨 Published to ${EXCHANGE} with key "${routingKey}": ${payload}`
+    const ok = rabbitChannel.publish(
+      EXCHANGE,
+      routingKey,
+      Buffer.from(payload),
+      {
+        persistent: true,
+        contentType: "application/json",
+        timestamp: Date.now(),
+        ...opts,
+      }
+    );
+
+    if (!ok) {
+      console.warn("⚠️ RabbitMQ publish buffer is full");
+    } else {
+      console.log(
+        `📨 Published to ${EXCHANGE} with key "${routingKey}": ${payload}`
+      );
+    }
+  } catch (err) {
+    console.error(
+      `❌ Failed to publish to RabbitMQ with key "${routingKey}"`,
+      err
     );
   }
 };
