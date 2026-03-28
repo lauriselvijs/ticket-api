@@ -16,6 +16,7 @@ services:
     restart: unless-stopped
     env_file:
       - ../.env
+    command: ["mongod", "--replSet", "rs0"]
     volumes:
       - mongodb-data:/data/db
     networks:

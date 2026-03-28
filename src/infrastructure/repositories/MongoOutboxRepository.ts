@@ -4,10 +4,15 @@ import { OutboxStatus } from "../../application/enums/OutboxStatus.ts";
 import { Outbox as OutboxModel } from "../persistence/mongo/models/outbox.ts";
 import type { OutboxRepository } from "../../application/ports/OutboxRepository.ts";
 import { toOutboxEvent } from "../persistence/mongo/mappers/outbox.mapper.ts";
+import { MongoDbSession } from "../persistence/mongo/MongoDbSession.ts";
 
 export class MongoOutboxRepository implements OutboxRepository {
   async create(event: OutboxEvent, session?: DbSession): Promise<void> {
-    await OutboxModel.create([event], { session });
+    if (!(session instanceof MongoDbSession)) {
+      throw new Error("Mongo adapter requires MongoDbSession");
+    }
+
+    await OutboxModel.create([event], { session: session.raw });
   }
 
   async findPending(limit = 100): Promise<OutboxEvent[]> {

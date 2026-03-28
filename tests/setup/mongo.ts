@@ -1,14 +1,18 @@
 import { before, beforeEach, after } from "node:test";
-import { connectToMongo, getConnection } from "../../src/config/mongo.ts";
+import {
+  getMongoConnection,
+  connectMongo,
+} from "../../src/infrastructure/persistence/mongo/mongo.connection.ts";
+import { mongoConfig } from "../../src/infrastructure/persistence/mongo/mongo.config.ts";
 
 before(async () => {
-  await connectToMongo();
+  await connectMongo(mongoConfig.uri);
 });
 
 beforeEach(async () => {
-  await getConnection().db?.dropDatabase();
+  await getMongoConnection().db?.dropDatabase();
 });
 
 after(async () => {
-  await getConnection().close();
+  await getMongoConnection().close();
 });

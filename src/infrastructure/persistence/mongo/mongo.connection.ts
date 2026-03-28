@@ -17,3 +17,10 @@ export const closeMongo = async () => {
     console.log("✅ Mongo disconnected");
   }
 };
+
+export const getMongoConnection = () => {
+  if (!isConnected) {
+    throw new Error("MongoDB is not connected");
+  }
+  return mongoose.connection;
+};

@@ -1,18 +1,16 @@
 import { describe, it, mock, beforeEach, before } from "node:test";
 import request from "supertest";
 import assert from "node:assert/strict";
-import {
-  TicketRoutingKeys,
-  TicketStatus,
-} from "../src/domain/ticket/enums/TicketStatus.ts";
+import { TicketStatus } from "../src/domain/ticket/enums/TicketStatus.ts";
 import { StatusCodes } from "http-status-codes";
 import { route } from "../src/presentation/http/routes/util/routes.ts";
 import { v4 as uuidv4 } from "uuid";
 
 import "./setup/mongo.ts";
 import { Ticket } from "../src/infrastructure/persistence/mongo/models/ticket.ts";
-import { seedTickets } from "../src/infrastructure/persistence/seeders/ticket.ts";
 import { publishToRabbitMock } from "./mocks/rabbit.ts";
+import { ticketEventRoutingKeyMap } from "../src/infrastructure/messaging/EventRoutingKeys.ts";
+import { seedTickets } from "./helpers/seedTickets.ts";
 
 if (!process.env.MONGO_INITDB_DATABASE?.includes("test")) {
   throw new Error(
@@ -100,7 +98,7 @@ describe("tickets", () => {
     assert.equal(publishToRabbitMock.mock.callCount(), 1);
     const call = publishToRabbitMock.mock.calls[0];
 
-    assert.equal(call.arguments[0], TicketRoutingKeys.CREATED);
+    assert.equal(call.arguments[0], ticketEventRoutingKeyMap.CREATED);
     const eventPayload = call.arguments[1];
 
     assert.equal(eventPayload.id, created.id);
@@ -142,7 +140,7 @@ describe("tickets", () => {
     assert.equal(publishToRabbitMock.mock.callCount(), 1);
     const call = publishToRabbitMock.mock.calls[0];
 
-    assert.equal(call.arguments[0], TicketRoutingKeys.UPDATED);
+    assert.equal(call.arguments[0], ticketEventRoutingKeyMap.UPDATED);
     const eventPayload = call.arguments[1];
 
     assert.equal(eventPayload.id, ticket.id);
@@ -183,7 +181,7 @@ describe("tickets", () => {
     assert.equal(publishToRabbitMock.mock.callCount(), 1);
     const call = publishToRabbitMock.mock.calls[0];
 
-    assert.equal(call.arguments[0], TicketRoutingKeys.DELETED);
+    assert.equal(call.arguments[0], ticketEventRoutingKeyMap.DELETED);
     const eventPayload = call.arguments[1];
 
     assert.equal(eventPayload.id, ticket.id);
