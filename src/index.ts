@@ -1,22 +1,22 @@
 import { createApp } from "./app.ts";
-import { connectToMongo } from "./config/mongo.ts";
-import { seedTickets } from "./db/seeders/ticket.ts";
+import { connectMongo } from "./infrastructure/persistence/mongo/mongo.connection.ts";
+import { mongoConfig } from "./infrastructure/persistence/mongo/mongo.config.ts";
 
 const PORT = Number(process.env.PORT) || 3000;
 
-const app = createApp();
+async function start() {
+  try {
+    await connectMongo(mongoConfig.uri);
 
-connectToMongo()
-  .then(async () => {
-    if (process.env.NODE_ENV === "development") {
-      await seedTickets(50);
-    }
+    const app = createApp();
 
     app.listen(PORT, () => {
-      console.log(`🚀 API running on http://localhost:${PORT}`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
-  })
-  .catch((err) => {
-    console.error("❌ Failed to connect to MongoDB", err);
+  } catch (error) {
+    console.error("Failed to start application", error);
     process.exit(1);
-  });
+  }
+}
+
+start();

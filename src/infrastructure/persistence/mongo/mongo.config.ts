@@ -1,0 +1,26 @@
+const {
+  MONGO_INITDB_ROOT_USERNAME,
+  MONGO_INITDB_ROOT_PASSWORD,
+  MONGO_HOST,
+  MONGO_PORT,
+  MONGO_INITDB_DATABASE,
+} = process.env;
+
+if (
+  !MONGO_INITDB_ROOT_USERNAME ||
+  !MONGO_INITDB_ROOT_PASSWORD ||
+  !MONGO_HOST ||
+  !MONGO_PORT ||
+  !MONGO_INITDB_DATABASE
+) {
+  throw new Error("Missing MongoDB environment variables");
+}
+
+export const mongoConfig = {
+  host: MONGO_HOST,
+  port: MONGO_PORT,
+  user: MONGO_INITDB_ROOT_USERNAME,
+  pass: MONGO_INITDB_ROOT_PASSWORD,
+  database: MONGO_INITDB_DATABASE,
+  uri: `mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_INITDB_DATABASE}?authSource=admin`,
+};

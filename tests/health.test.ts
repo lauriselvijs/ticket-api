@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import request from "supertest";
 import assert from "node:assert/strict";
 import { StatusCodes } from "http-status-codes";
-import { route } from "../src/util/routes.ts";
+import { route } from "../src/presentation/http/routes/util/routes.ts";
 
 import "./setup/mongo.ts";
 import { createApp } from "../src/app.ts";

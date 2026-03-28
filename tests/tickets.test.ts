@@ -1,19 +1,22 @@
 import { describe, it, mock, beforeEach, before } from "node:test";
 import request from "supertest";
 import assert from "node:assert/strict";
-import { TicketRoutingKeys, TicketStatus } from "../src/enums/tickets.ts";
+import {
+  TicketRoutingKeys,
+  TicketStatus,
+} from "../src/domain/ticket/enums/TicketStatus.ts";
 import { StatusCodes } from "http-status-codes";
-import { route } from "../src/util/routes.ts";
+import { route } from "../src/presentation/http/routes/util/routes.ts";
 import { v4 as uuidv4 } from "uuid";
 
 import "./setup/mongo.ts";
-import { Ticket } from "../src/models/ticket.ts";
-import { seedTickets } from "../src/db/seeders/ticket.ts";
+import { Ticket } from "../src/infrastructure/persistence/mongo/models/ticket.ts";
+import { seedTickets } from "../src/infrastructure/persistence/seeders/ticket.ts";
 import { publishToRabbitMock } from "./mocks/rabbit.ts";
 
 if (!process.env.MONGO_INITDB_DATABASE?.includes("test")) {
   throw new Error(
-    `Refusing to run tests: ${process.env.MONGO_INITDB_DATABASE} is not a test database`
+    `Refusing to run tests: ${process.env.MONGO_INITDB_DATABASE} is not a test database`,
   );
 }
 
