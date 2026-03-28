@@ -1,5 +1,5 @@
 import type OutboxEvent from "../events/OutboxEvent.ts";
-import { DbSession } from "./DbSession.ts";
+import type { DbSession } from "./DbSession.ts";
 
 export interface OutboxRepository {
   create(event: OutboxEvent, session?: DbSession): Promise<void>;

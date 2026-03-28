@@ -1,8 +1,8 @@
 import CreateTicketDto from "../dtos/CreateTicketDto.ts";
-import { OutboxRepository } from "../ports/OutboxRepository.ts";
+import type { OutboxRepository } from "../ports/OutboxRepository.ts";
 import Ticket from "../../domain/ticket/entities/Ticket.ts";
-import { DbConnection } from "../ports/DbConnection.ts";
-import { TicketRepository } from "../../domain/ticket/repositories/TicketRepository.ts";
+import type { DbConnection } from "../ports/DbConnection.ts";
+import type { TicketRepository } from "../../domain/ticket/repositories/TicketRepository.ts";
 import { createTicketCreatedEvent } from "../events/ticket/createTicketCreatedEvent.ts";
 
 export default class CreateTicketUseCase {

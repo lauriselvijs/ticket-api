@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
 import { OutboxStatus } from "../../../../application/enums/OutboxStatus.ts";
-import { OutboxDocument } from "../types/OutboxDocument.ts";
+import type { OutboxDocument } from "../types/OutboxDocument.ts";
 
 export const outboxSchema = new Schema<OutboxDocument>(
   {

@@ -1,6 +1,6 @@
-import { DbSession } from "../../../application/ports/DbSession.ts";
+import type { DbSession } from "../../../application/ports/DbSession.ts";
 import Ticket from "../entities/Ticket.ts";
-import { NewTicket } from "../types/Ticket.ts";
+import type { NewTicket } from "../types/Ticket.ts";
 
 export interface TicketRepository {
   create(ticket: NewTicket, session?: DbSession): Promise<Ticket>;

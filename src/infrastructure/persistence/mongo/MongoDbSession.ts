@@ -1,5 +1,5 @@
-import { ClientSession } from "mongoose";
-import { DbSession } from "../../../application/ports/DbSession.ts";
+import type { ClientSession } from "mongoose";
+import type { DbSession } from "../../../application/ports/DbSession.ts";
 
 export class MongoDbSession implements DbSession {
   constructor(private readonly session: ClientSession) {}

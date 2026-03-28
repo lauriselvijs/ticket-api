@@ -1,6 +1,6 @@
 import { AggregateType } from "../../../../application/enums/AggregateType.ts";
 import OutboxEvent from "../../../../application/events/OutboxEvent.ts";
-import { OutboxDocument } from "../types/OutboxDocument.ts";
+import type { OutboxDocument } from "../types/OutboxDocument.ts";
 
 export const toOutboxEvent = (doc: OutboxDocument): OutboxEvent => {
   return new OutboxEvent(

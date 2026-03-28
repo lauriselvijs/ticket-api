@@ -1,4 +1,5 @@
 import CreateTicketUseCase from "./application/use-cases/CreateTicketUseCase.ts";
+import { DeleteTicketUseCase } from "./application/use-cases/DeleteTicketUseCase.ts";
 import GetTicketsUseCase from "./application/use-cases/GetTicketsUseCase.ts";
 import { GetTicketUseCase } from "./application/use-cases/GetTicketUseCase.ts";
 import { UpdateTicketUseCase } from "./application/use-cases/UpdateTicketUseCase.ts";
@@ -27,9 +28,16 @@ export const updateTicketUseCase = new UpdateTicketUseCase(
   dbConnection,
 );
 
+export const deleteTicketUseCase = new DeleteTicketUseCase(
+  ticketRepository,
+  outboxRepository,
+  dbConnection,
+);
+
 export const ticketController = new TicketController(
   createTicketUseCase,
   getTicketsUseCase,
   getTicketUseCase,
   updateTicketUseCase,
+  deleteTicketUseCase,
 );

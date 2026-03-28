@@ -1,4 +1,4 @@
-import { TicketRepository } from "../../domain/ticket/repositories/TicketRepository.ts";
+import type { TicketRepository } from "../../domain/ticket/repositories/TicketRepository.ts";
 import Ticket from "../../domain/ticket/entities/Ticket.ts";
 
 export default class GetTicketsUseCase {

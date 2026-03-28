@@ -1,7 +1,7 @@
-import { ClientSession } from "mongoose";
+import type { ClientSession } from "mongoose";
 import { Ticket as TicketModel } from "../persistence/mongo/models/ticket.ts";
 import Ticket from "../../domain/ticket/entities/Ticket.ts";
-import { TicketRepository } from "../../domain/ticket/repositories/TicketRepository.ts";
+import type { TicketRepository } from "../../domain/ticket/repositories/TicketRepository.ts";
 
 export class MongoTicketRepository implements TicketRepository {
   async findById(id: string): Promise<Ticket | null> {

@@ -1,6 +1,6 @@
 import { TicketStatus } from "../enums/TicketStatus.ts";
-import { NewTicket } from "../types/Ticket.ts";
-import { UpdateTicket } from "../types/UpdateTicket.ts";
+import type { NewTicket } from "../types/Ticket.ts";
+import type { UpdateTicket } from "../types/UpdateTicket.ts";
 
 export default class Ticket {
   constructor(

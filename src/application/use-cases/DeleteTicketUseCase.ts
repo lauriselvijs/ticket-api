@@ -1,8 +1,8 @@
-import { TicketRepository } from "../../domain/ticket/repositories/TicketRepository.ts";
+import type { TicketRepository } from "../../domain/ticket/repositories/TicketRepository.ts";
 import NotFoundError from "../errors/NotFoundError.ts";
 import { deleteTicketDeletedEvent } from "../events/ticket/deleteTicketDeletedEvent.ts";
-import { DbConnection } from "../ports/DbConnection.ts";
-import { OutboxRepository } from "../ports/OutboxRepository.ts";
+import type { DbConnection } from "../ports/DbConnection.ts";
+import type { OutboxRepository } from "../ports/OutboxRepository.ts";
 
 export class DeleteTicketUseCase {
   constructor(

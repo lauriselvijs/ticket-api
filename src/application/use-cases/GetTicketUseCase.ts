@@ -1,5 +1,5 @@
 import Ticket from "../../domain/ticket/entities/Ticket.ts";
-import { TicketRepository } from "../../domain/ticket/repositories/TicketRepository.ts";
+import type { TicketRepository } from "../../domain/ticket/repositories/TicketRepository.ts";
 import NotFoundError from "../errors/NotFoundError.ts";
 
 export class GetTicketUseCase {

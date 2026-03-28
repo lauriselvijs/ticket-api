@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { DbConnection } from "../../../application/ports/DbConnection.ts";
-import { DbSession } from "../../../application/ports/DbSession.ts";
+import type { DbConnection } from "../../../application/ports/DbConnection.ts";
+import type { DbSession } from "../../../application/ports/DbSession.ts";
 import { MongoDbSession } from "./MongoDbSession.ts";
 
 export class MongoDbConnection implements DbConnection {

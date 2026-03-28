@@ -1,10 +1,10 @@
 import Ticket from "../../domain/ticket/entities/Ticket.ts";
-import { TicketRepository } from "../../domain/ticket/repositories/TicketRepository.ts";
+import type { TicketRepository } from "../../domain/ticket/repositories/TicketRepository.ts";
 import UpdateTicketDto from "../dtos/UpdateTicketDto.ts";
 import NotFoundError from "../errors/NotFoundError.ts";
 import { updateTicketUpdatedEvent } from "../events/ticket/updateTicketUpdatedEvent.ts";
-import { DbConnection } from "../ports/DbConnection.ts";
-import { OutboxRepository } from "../ports/OutboxRepository.ts";
+import type { DbConnection } from "../ports/DbConnection.ts";
+import type { OutboxRepository } from "../ports/OutboxRepository.ts";
 
 export class UpdateTicketUseCase {
   constructor(

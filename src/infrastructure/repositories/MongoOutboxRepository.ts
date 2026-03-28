@@ -2,7 +2,7 @@ import OutboxEvent from "../../application/events/OutboxEvent.ts";
 import type { DbSession } from "../../application/ports/DbSession.ts";
 import { OutboxStatus } from "../../application/enums/OutboxStatus.ts";
 import { Outbox as OutboxModel } from "../persistence/mongo/models/outbox.ts";
-import { OutboxRepository } from "../../application/ports/OutboxRepository.ts";
+import type { OutboxRepository } from "../../application/ports/OutboxRepository.ts";
 import { toOutboxEvent } from "../persistence/mongo/mappers/outbox.mapper.ts";
 
 export class MongoOutboxRepository implements OutboxRepository {
