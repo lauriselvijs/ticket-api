@@ -76,9 +76,8 @@ export class TicketController {
       const { id } = req.params;
       await this.deleteTicketUseCase.execute(id);
 
-      res
-        .status(StatusCodes.NO_CONTENT)
-        .json({ message: "Ticket deleted successfully" });
+      console.log("Ticket deleted successfully");
+      res.sendStatus(StatusCodes.NO_CONTENT);
     } catch (error) {
       return next(error);
     }

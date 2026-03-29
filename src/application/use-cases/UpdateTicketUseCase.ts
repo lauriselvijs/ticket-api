@@ -27,7 +27,7 @@ export class UpdateTicketUseCase {
 
       const updatedTicket = ticket.update(data);
 
-      const updated = await this.ticketRepository.update(ticket);
+      const updated = await this.ticketRepository.update(ticket, session);
 
       if (!updated) {
         throw new NotFoundError("Ticket not found");

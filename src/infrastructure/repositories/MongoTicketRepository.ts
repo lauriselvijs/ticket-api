@@ -7,7 +7,7 @@ import { MongoDbSession } from "../persistence/mongo/MongoDbSession.ts";
 export class MongoTicketRepository implements TicketRepository {
   async findById(id: string): Promise<Ticket | null> {
     const ticket = await TicketModel.findOne({
-      _id: id,
+      id: id,
       deletedAt: null,
     });
 
@@ -75,7 +75,7 @@ export class MongoTicketRepository implements TicketRepository {
 
     const updated = await TicketModel.findOneAndUpdate(
       {
-        _id: ticket.id,
+        id: ticket.id,
         deletedAt: null,
       },
       {
@@ -94,7 +94,7 @@ export class MongoTicketRepository implements TicketRepository {
     }
 
     return Ticket.rehydrate(
-      updated._id.toString(),
+      updated.id.toString(),
       updated.title,
       updated.description,
       updated.status,
@@ -109,7 +109,7 @@ export class MongoTicketRepository implements TicketRepository {
     }
 
     await TicketModel.updateOne(
-      { _id: ticket.id },
+      { id: ticket.id },
       {
         title: ticket.title,
         description: ticket.description,

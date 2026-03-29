@@ -7,7 +7,7 @@ const {
   NODE_ENV,
 } = process.env;
 
-const isDev = NODE_ENV === "development";
+const isDev = NODE_ENV === "development" || NODE_ENV === "test";
 
 if (!MONGO_HOST || !MONGO_PORT || !MONGO_INITDB_DATABASE) {
   throw new Error("Missing MongoDB environment variables");

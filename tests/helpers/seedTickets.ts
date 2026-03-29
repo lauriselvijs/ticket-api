@@ -6,7 +6,7 @@ export async function seedTickets(count: number = 5) {
   const now = new Date();
 
   const tickets = Array.from({ length: count }).map((_, i) => ({
-    _id: randomUUID(),
+    id: randomUUID(),
     title: `Ticket ${i + 1}`,
     description: `Description ${i + 1}`,
     status: TicketStatus.OPEN,

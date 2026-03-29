@@ -25,7 +25,7 @@ export class DeleteTicketUseCase {
 
       ticket.delete();
 
-      await this.ticketRepository.save(ticket);
+      await this.ticketRepository.save(ticket, session);
 
       const event = deleteTicketDeletedEvent(ticket);
 

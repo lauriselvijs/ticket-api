@@ -7,10 +7,11 @@ export const globalErrorHandler = (
   err: Error,
   _req: Request,
   res: Response,
-  next: NextFunction,
+  _next: NextFunction,
 ) => {
   if (err instanceof NotFoundError) {
-    res.status(err.status).json({ message: err.message });
+    console.log("NotFoundError:", err.message);
+    return res.status(err.status).json({ message: err.message });
   }
 
   if (err instanceof HttpError) {

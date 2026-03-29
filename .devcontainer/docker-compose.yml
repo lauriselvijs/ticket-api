@@ -28,7 +28,6 @@ services:
     env_file:
       - ../.env
     ports:
-      - "5672:5672" # RabbitMQ broker port
       - "15672:15672" # Management UI
     networks:
       - devnet

@@ -13,6 +13,6 @@ router.get("/", ticketController.getAll);
 router.get("/:id", ticketController.findById);
 router.post("/", validate(createTicketSchema), ticketController.create);
 router.put("/:id", validate(updateTicketSchema), ticketController.update);
-// router.delete("/:id", ticketController.delete);
+router.delete("/:id", ticketController.delete);
 
 export default router;

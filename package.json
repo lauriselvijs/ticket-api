@@ -10,8 +10,8 @@
     "outbox:dev": "NODE_ENV=development node --env-file=.env --watch --experimental-transform-types src/workers/outbox.worker.ts",
     "outbox": "NODE_ENV=production node --env-file=.env --experimental-transform-types src/workers/outbox.worker.ts",
     "typecheck": "tsc --noEmit",
-    "test": "NODE_ENV=test MONGO_INITDB_DATABASE=tickets_test node --env-file=.env.testing --test --experimental-test-module-mocks --experimental-transform-types",
-    "test:watch": "NODE_ENV=test MONGO_INITDB_DATABASE=tickets_test node --env-file=.env.testing --test --watch --experimental-test-module-mocks --experimental-transform-types"
+    "test": "NODE_ENV=test MONGO_INITDB_DATABASE=tickets_test node --env-file=.env.testing --test --experimental-transform-types tests/**/*.test.ts",
+    "test:watch": "NODE_ENV=test MONGO_INITDB_DATABASE=tickets_test node --env-file=.env.testing --test --watch --experimental-transform-types tests/**/*.test.ts"
   },
   "license": "ISC",
   "dependencies": {
@@ -21,7 +21,6 @@
     "mongodb": "^6.19.0",
     "mongoose": "^8.18.1",
     "supertest": "^7.1.4",
-    "uuid": "^13.0.0",
     "zod": "^4.1.5"
   },
   "devDependencies": {
