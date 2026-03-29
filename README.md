@@ -63,14 +63,25 @@ The API will be available at `http://localhost:3000`.
 
 ## Project Structure
 
-- `src/controllers/` – Route handlers
-- `src/models/` – Mongoose models
-- `src/routes/` – Express route definitions
-- `src/middleware/` – Express middleware
-- `src/config/` – Configuration for Express, MongoDB, RabbitMQ
-- `src/schemas/` – Zod validation schemas
-- `src/enums/` – Enums for ticket status and routing keys
-- `src/util/` – Utility functions
+- `src/app.ts` – Application and server bootstrap
+- `src/index.ts` – Entry point
+- `src/container.ts` – Dependency injection / app wiring
+- `src/application/dtos/` – Data transfer objects
+- `src/application/enums/` – Aggregate and outbox status enums
+- `src/application/errors/` – Custom error types
+- `src/application/events/` – Domain integration/outbox event models
+- `src/application/ports/` – Interfaces (DbConnection, EventBus, OutboxRepository, etc.)
+- `src/application/use-cases/` – Business use cases (CRUD + outbox event publish)
+- `src/domain/ticket/entities/` – Ticket domain entity
+- `src/domain/ticket/enums/` – Ticket status/event type enums
+- `src/domain/ticket/repositories/` – Ticket repository interface
+- `src/domain/ticket/types/` – Ticket domain types
+- `src/infrastructure/messaging/` – RabbitMQ config and event bus implementation
+- `src/infrastructure/persistence/mongo/` – MongoDB config, models, schemas, mappers
+- `src/infrastructure/repositories/` – MongoDB repositories
+- `src/presentation/http/` – Express config, controllers, errors, middleware, routes, validation
+- `src/workers/` – Background worker (outbox event publisher)
+- `tests/` – Integration/functional tests
 
 ## License
 
