@@ -10,7 +10,6 @@ export const globalErrorHandler = (
   _next: NextFunction,
 ) => {
   if (err instanceof NotFoundError) {
-    console.log("NotFoundError:", err.message);
     return res.status(err.status).json({ message: err.message });
   }
 
