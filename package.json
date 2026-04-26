@@ -5,13 +5,13 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development node --env-file=.env --watch --experimental-transform-types src/index.ts",
-    "start": "NODE_ENV=production node --env-file=.env --experimental-transform-types src/index.ts",
-    "outbox:dev": "NODE_ENV=development node --env-file=.env --watch --experimental-transform-types src/workers/outbox.worker.ts",
-    "outbox": "NODE_ENV=production node --env-file=.env --experimental-transform-types src/workers/outbox.worker.ts",
+    "dev": "NODE_ENV=development node --watch --experimental-transform-types src/index.ts",
+    "start": "NODE_ENV=production node  --experimental-transform-types src/index.ts",
+    "outbox:dev": "NODE_ENV=development node  --watch --experimental-transform-types src/workers/outbox.worker.ts",
+    "outbox": "NODE_ENV=production node  --experimental-transform-types src/workers/outbox.worker.ts",
     "typecheck": "tsc --noEmit",
-    "test": "NODE_ENV=test MONGO_INITDB_DATABASE=tickets_test node --env-file=.env.testing --test --experimental-transform-types tests/**/*.test.ts",
-    "test:watch": "NODE_ENV=test MONGO_INITDB_DATABASE=tickets_test node --env-file=.env.testing --test --watch --experimental-transform-types tests/**/*.test.ts"
+    "test": "NODE_ENV=test MONGO_INITDB_DATABASE=tickets_test node --test --experimental-transform-types tests/**/*.test.ts",
+    "test:watch": "NODE_ENV=test MONGO_INITDB_DATABASE=tickets_test node --test --watch --experimental-transform-types tests/**/*.test.ts"
   },
   "license": "ISC",
   "dependencies": {
