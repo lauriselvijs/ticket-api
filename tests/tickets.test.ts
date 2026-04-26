@@ -5,10 +5,10 @@ import { TicketStatus } from "../src/domain/ticket/enums/TicketStatus.ts";
 import { StatusCodes } from "http-status-codes";
 import { route } from "../src/presentation/http/routes/util/routes.ts";
 import "./setup/mongo.ts";
-import { Ticket } from "../src/infrastructure/persistence/mongo/models/ticket.ts";
+import { Ticket } from "../src/infrastructure/db/mongo/models/ticket.ts";
 import { seedTickets } from "./helpers/seedTickets.ts";
 import { randomUUID } from "node:crypto";
-import { Outbox } from "../src/infrastructure/persistence/mongo/models/outbox.ts";
+import { Outbox } from "../src/infrastructure/db/mongo/models/outbox.ts";
 import { TicketEventType } from "../src/domain/ticket/enums/TicketEventType.ts";
 import { OutboxStatus } from "../src/application/enums/OutboxStatus.ts";
 

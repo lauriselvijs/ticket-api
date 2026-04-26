@@ -1,10 +1,10 @@
-import OutboxEvent from "../../application/events/OutboxEvent.ts";
-import type { DbSession } from "../../application/ports/DbSession.ts";
-import { OutboxStatus } from "../../application/enums/OutboxStatus.ts";
-import { Outbox as OutboxModel } from "../persistence/mongo/models/outbox.ts";
-import type { OutboxRepository } from "../../application/ports/OutboxRepository.ts";
-import { toOutboxEvent } from "../persistence/mongo/mappers/outbox.mapper.ts";
-import { MongoDbSession } from "../persistence/mongo/MongoDbSession.ts";
+import { OutboxStatus } from "../../../../application/enums/OutboxStatus.ts";
+import OutboxEvent from "../../../../application/events/OutboxEvent.ts";
+import type { DbSession } from "../../../../application/ports/DbSession.ts";
+import type { OutboxRepository } from "../../../../application/ports/OutboxRepository.ts";
+import { toOutboxEvent } from "../mappers/outbox.mapper.ts";
+import { Outbox } from "../models/outbox.ts";
+import { MongoDbSession } from "../MongoDbSession.ts";
 
 export class MongoOutboxRepository implements OutboxRepository {
   async create(event: OutboxEvent, session?: DbSession): Promise<void> {
@@ -12,11 +12,11 @@ export class MongoOutboxRepository implements OutboxRepository {
       throw new Error("Mongo adapter requires MongoDbSession");
     }
 
-    await OutboxModel.create([event], { session: session.raw });
+    await Outbox.create([event], { session: session.raw });
   }
 
   async findPending(limit = 100): Promise<OutboxEvent[]> {
-    const events = await OutboxModel.find({
+    const events = await Outbox.find({
       status: OutboxStatus.PENDING,
       $or: [{ nextRetryAt: null }, { nextRetryAt: { $lte: new Date() } }],
     })
@@ -28,7 +28,7 @@ export class MongoOutboxRepository implements OutboxRepository {
   }
 
   async markAsPublished(eventId: string): Promise<void> {
-    await OutboxModel.updateOne(
+    await Outbox.updateOne(
       { id: eventId },
       {
         $set: {
@@ -43,7 +43,7 @@ export class MongoOutboxRepository implements OutboxRepository {
   }
 
   async markAsFailed(eventId: string, error?: string): Promise<void> {
-    await OutboxModel.updateOne(
+    await Outbox.updateOne(
       { id: eventId },
       {
         $set: {
@@ -63,7 +63,7 @@ export class MongoOutboxRepository implements OutboxRepository {
     error: string,
     nextRetryAt: Date,
   ): Promise<void> {
-    await OutboxModel.updateOne(
+    await Outbox.updateOne(
       { id: eventId },
       {
         $set: {

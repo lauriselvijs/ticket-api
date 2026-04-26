@@ -1,8 +1,8 @@
 import PublishOutboxEventsUseCase from "../application/use-cases/PublishOutboxEventsUseCase.ts";
 import { RabbitEventBus } from "../infrastructure/messaging/rabbit/RabbitEventBus.ts";
-import { MongoOutboxRepository } from "../infrastructure/repositories/MongoOutboxRepository.ts";
-import { mongoConfig } from "../infrastructure/persistence/mongo/mongo.config.ts";
-import { connectMongo } from "../infrastructure/persistence/mongo/mongo.connection.ts";
+import { mongoConfig } from "../infrastructure/db/mongo/mongo.config.ts";
+import { connectMongo } from "../infrastructure/db/mongo/mongo.connection.ts";
+import { MongoOutboxRepository } from "../infrastructure/db/mongo/repositories/MongoOutboxRepository.ts";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 

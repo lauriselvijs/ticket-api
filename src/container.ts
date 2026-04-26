@@ -3,9 +3,9 @@ import { DeleteTicketUseCase } from "./application/use-cases/DeleteTicketUseCase
 import GetTicketsUseCase from "./application/use-cases/GetTicketsUseCase.ts";
 import { GetTicketUseCase } from "./application/use-cases/GetTicketUseCase.ts";
 import { UpdateTicketUseCase } from "./application/use-cases/UpdateTicketUseCase.ts";
-import { MongoDbConnection } from "./infrastructure/persistence/mongo/MongoDbConnection.ts";
-import { MongoOutboxRepository } from "./infrastructure/repositories/MongoOutboxRepository.ts";
-import { MongoTicketRepository } from "./infrastructure/repositories/MongoTicketRepository.ts";
+import { MongoDbConnection } from "./infrastructure/db/mongo/MongoDbConnection.ts";
+import { MongoOutboxRepository } from "./infrastructure/db/mongo/repositories/MongoOutboxRepository.ts";
+import { MongoTicketRepository } from "./infrastructure/db/mongo/repositories/MongoTicketRepository.ts";
 import { TicketController } from "./presentation/http/controllers/ticket.controller.ts";
 
 const ticketRepository = new MongoTicketRepository();

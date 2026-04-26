@@ -1,4 +1,4 @@
-import { Ticket as TicketModel } from "../../src/infrastructure/persistence/mongo/models/ticket.ts";
+import { Ticket as TicketModel } from "../../src/infrastructure/db/mongo/models/ticket.ts";
 import { randomUUID } from "crypto";
 import { TicketStatus } from "../../src/domain/ticket/enums/TicketStatus.ts";
 

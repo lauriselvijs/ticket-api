@@ -1,8 +1,8 @@
-import { Ticket as TicketModel } from "../persistence/mongo/models/ticket.ts";
-import Ticket from "../../domain/ticket/entities/Ticket.ts";
-import type { TicketRepository } from "../../domain/ticket/repositories/TicketRepository.ts";
-import type { DbSession } from "../../application/ports/DbSession.ts";
-import { MongoDbSession } from "../persistence/mongo/MongoDbSession.ts";
+import type { TicketRepository } from "../../../../domain/ticket/repositories/TicketRepository.ts";
+import { Ticket as TicketModel } from "../models/ticket.ts";
+import type { DbSession } from "../../../../application/ports/DbSession.ts";
+import { MongoDbSession } from "../MongoDbSession.ts";
+import Ticket from "../../../../domain/ticket/entities/Ticket.ts";
 
 export class MongoTicketRepository implements TicketRepository {
   async findById(id: string): Promise<Ticket | null> {

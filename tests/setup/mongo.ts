@@ -2,8 +2,8 @@ import { before, beforeEach, after } from "node:test";
 import {
   getMongoConnection,
   connectMongo,
-} from "../../src/infrastructure/persistence/mongo/mongo.connection.ts";
-import { mongoConfig } from "../../src/infrastructure/persistence/mongo/mongo.config.ts";
+} from "../../src/infrastructure/db/mongo/mongo.connection.ts";
+import { mongoConfig } from "../../src/infrastructure/db/mongo/mongo.config.ts";
 
 before(async () => {
   await connectMongo(mongoConfig.uri);

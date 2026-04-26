@@ -1,6 +1,6 @@
 import { createApp } from "./app.ts";
-import { connectMongo } from "./infrastructure/persistence/mongo/mongo.connection.ts";
-import { mongoConfig } from "./infrastructure/persistence/mongo/mongo.config.ts";
+import { connectMongo } from "./infrastructure/db/mongo/mongo.connection.ts";
+import { mongoConfig } from "./infrastructure/db/mongo/mongo.config.ts";
 
 const PORT = Number(process.env.PORT) || 3000;
 
