@@ -1,4 +1,4 @@
-import IntegrationEvent from "../../../application/events/IntegrationEvent.ts";
+import { IntegrationEvent } from "../../../application/events/IntegrationEvent.ts";
 import { EventBus } from "../../../application/ports/EventBus.ts";
 import { publishToRabbit } from "../rabbit/rabbit.publisher.ts";
 

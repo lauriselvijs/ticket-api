@@ -1,4 +1,4 @@
-export default interface IntegrationEvent {
+export interface IntegrationEvent {
   eventType: string;
   aggregateId: string;
   aggregateType: string;
