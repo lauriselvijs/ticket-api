@@ -18,10 +18,10 @@ export const publishToRabbit = async (
       routingKey,
       payload,
       {
+        ...opts,
         persistent: true,
         contentType: "application/json",
         timestamp: Date.now(),
-        ...opts,
       },
       (err) => {
         if (err) {
