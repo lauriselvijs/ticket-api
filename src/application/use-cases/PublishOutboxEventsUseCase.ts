@@ -4,7 +4,7 @@ import { OutboxRepository } from "../ports/OutboxRepository.ts";
 const MAX_RETRIES = 5;
 
 function getRetryDelayMs(retryCount: number): number {
-  const delays = [5000, 30000, 120000, 600000];
+  const delays = [5_000, 30_000, 120_000, 600_000];
   return delays[Math.min(retryCount - 1, delays.length - 1)];
 }
 
