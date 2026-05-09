@@ -17,11 +17,11 @@ if (!isDev && (!MONGO_INITDB_ROOT_USERNAME || !MONGO_INITDB_ROOT_PASSWORD)) {
   throw new Error("Missing MongoDB credentials");
 }
 
-const credentials = !isDev
-  ? `${MONGO_INITDB_ROOT_USERNAME!}:${MONGO_INITDB_ROOT_PASSWORD!}@`
-  : "";
+const credentials = isDev
+  ? ""
+  : `${MONGO_INITDB_ROOT_USERNAME!}:${MONGO_INITDB_ROOT_PASSWORD!}@`;
 
-const authParams = !isDev ? "&authSource=admin" : "";
+const authParams = isDev ? "" : "&authSource=admin";
 
 export const mongoConfig = {
   host: MONGO_HOST,
