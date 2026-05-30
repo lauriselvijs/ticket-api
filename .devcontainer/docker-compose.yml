@@ -7,6 +7,7 @@ services:
       - ../.env
     volumes:
       - ../..:/workspaces:cached
+      - ../../.codex:/home/node/.codex
     command: sleep infinity
     networks:
       - devnet
