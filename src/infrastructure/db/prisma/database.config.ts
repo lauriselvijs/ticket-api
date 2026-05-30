@@ -18,11 +18,16 @@ if (
   throw new Error("Missing required MySQL environment variables");
 }
 
+const isDev = process.env.NODE_ENV !== "production";
+
+const user = isDev ? "root" : MYSQL_USER;
+const pass = isDev ? MYSQL_ROOT_PASSWORD : MYSQL_PASSWORD;
+
 export const databaseConfig = {
   host: MYSQL_HOST,
   port: MYSQL_PORT,
-  user: MYSQL_USER,
-  pass: MYSQL_PASSWORD,
+  user,
+  pass,
   database: MYSQL_DATABASE,
-  url: `mysql://${MYSQL_USER}:${encodeURIComponent(MYSQL_PASSWORD)}@${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}`,
+  url: `mysql://${user}:${encodeURIComponent(pass)}@${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}`,
 };
