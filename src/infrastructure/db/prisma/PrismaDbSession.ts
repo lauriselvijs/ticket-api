@@ -1,28 +1,8 @@
-import { DbSession } from "../../../application/ports/DbSession.ts";
-import prisma from "./prisma.client.ts";
+import type { Prisma } from "../../../../generated/prisma/client.ts";
+import type { DbSession } from "../../../application/ports/DbSession.ts";
 
 export class PrismaDbSession implements DbSession {
-  private inTransaction = false;
+  readonly type: "db-session" = "db-session";
 
-  startTransaction(): void {
-    this.inTransaction = true;
-  }
-
-  async commitTransaction(): Promise<void> {
-    // Prisma transactions are handled automatically in the use case
-    this.inTransaction = false;
-  }
-
-  async abortTransaction(): Promise<void> {
-    // Prisma transactions are rolled back automatically on error
-    this.inTransaction = false;
-  }
-
-  endSession(): void {
-    // No need to explicitly end session with Prisma
-  }
-
-  isInTransaction(): boolean {
-    return this.inTransaction;
-  }
+  constructor(readonly client: Prisma.TransactionClient) {}
 }

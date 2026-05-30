@@ -13,11 +13,7 @@ export default class CreateTicketUseCase {
   ) {}
 
   async execute(dto: CreateTicketDto) {
-    const session = await this.db.startSession();
-
-    try {
-      session.startTransaction();
-
+    return this.db.transaction(async (session) => {
       const ticket = Ticket.create(dto);
 
       const savedTicket = await this.ticketRepository.create(ticket, session);
@@ -26,14 +22,7 @@ export default class CreateTicketUseCase {
 
       await this.outboxRepository.create(event, session);
 
-      await session.commitTransaction();
-
       return savedTicket;
-    } catch (e) {
-      await session.abortTransaction();
-      throw e;
-    } finally {
-      session.endSession();
-    }
+    });
   }
 }

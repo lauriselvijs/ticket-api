@@ -1,4 +1,5 @@
-import { describe, it, beforeEach, before } from "node:test";
+import { describe, it, before } from "node:test";
+import type { Express } from "express";
 import request from "supertest";
 import assert from "node:assert/strict";
 import { TicketStatus } from "../src/domain/ticket/enums/TicketStatus.ts";
@@ -11,13 +12,21 @@ import { randomUUID } from "node:crypto";
 import { TicketEventType } from "../src/domain/ticket/enums/TicketEventType.ts";
 import { OutboxStatus } from "../src/application/enums/OutboxStatus.ts";
 
+function assertPayloadObject(
+  payload: unknown,
+): asserts payload is Record<string, unknown> {
+  assert.equal(typeof payload, "object");
+  assert.notEqual(payload, null);
+  assert.equal(Array.isArray(payload), false);
+}
+
 if (process.env.NODE_ENV !== "test") {
   throw new Error(
     `Refusing to run tests: NODE_ENV is not 'test', got '${process.env.NODE_ENV}'`,
   );
 }
 
-let app: any;
+let app: Express;
 
 describe("tickets", () => {
   before(async () => {
@@ -62,7 +71,7 @@ describe("tickets", () => {
     assert.equal(res.body.message, `Ticket with id ${missingId} not found`);
   });
 
-  it("POST /tickets creates a ticket and publishes CREATED event", async (t) => {
+  it("POST /tickets creates a ticket and publishes CREATED event", async () => {
     const payload = {
       title: "New ticket",
       description: "Some description",
@@ -84,9 +93,11 @@ describe("tickets", () => {
     const db = getDb();
     const ticket = await db.ticket.findFirst({ where: { id: created.id } });
     assert.ok(ticket);
-    assert.equal(ticket!.title, payload.title);
+    assert.equal(ticket.title, payload.title);
 
-    const messages = await db.outbox.findMany({ where: { aggregateId: created.id } });
+    const messages = await db.outbox.findMany({
+      where: { aggregateId: created.id },
+    });
 
     assert.equal(
       messages.length,
@@ -97,6 +108,7 @@ describe("tickets", () => {
     const outboxMessage = messages[0];
 
     assert.ok(outboxMessage, "Outbox message should exist");
+    assertPayloadObject(outboxMessage.payload);
 
     assert.equal(outboxMessage.aggregateId, created.id);
     assert.equal(outboxMessage.eventType, TicketEventType.CREATED);
@@ -130,10 +142,12 @@ describe("tickets", () => {
     const db = getDb();
     const updated = await db.ticket.findFirst({ where: { id: ticket.id } });
     assert.ok(updated);
-    assert.equal(updated!.title, updatePayload.title);
-    assert.equal(updated!.status, updatePayload.status);
+    assert.equal(updated.title, updatePayload.title);
+    assert.equal(updated.status, updatePayload.status);
 
-    const messages = await db.outbox.findMany({ where: { aggregateId: updated.id } });
+    const messages = await db.outbox.findMany({
+      where: { aggregateId: updated.id },
+    });
 
     assert.equal(
       messages.length,
@@ -144,6 +158,7 @@ describe("tickets", () => {
     const outboxMessage = messages[0];
 
     assert.ok(outboxMessage, "Outbox message should exist");
+    assertPayloadObject(outboxMessage.payload);
 
     assert.equal(outboxMessage.aggregateId, updated.id);
     assert.equal(outboxMessage.eventType, TicketEventType.UPDATED);
@@ -167,7 +182,9 @@ describe("tickets", () => {
     assert.equal(res.body.message, `Ticket with id ${missingId} not found`);
 
     const db = getDb();
-    const messages = await db.outbox.findMany({ where: { aggregateId: missingId } });
+    const messages = await db.outbox.findMany({
+      where: { aggregateId: missingId },
+    });
 
     assert.equal(messages.length, 0, "Should not create any outbox messages");
   });
@@ -185,7 +202,9 @@ describe("tickets", () => {
     });
     assert.equal(deletedTicket, null);
 
-    const messages = await db.outbox.findMany({ where: { aggregateId: ticket.id } });
+    const messages = await db.outbox.findMany({
+      where: { aggregateId: ticket.id },
+    });
 
     assert.equal(
       messages.length,
@@ -196,6 +215,7 @@ describe("tickets", () => {
     const outboxMessage = messages[0];
 
     assert.ok(outboxMessage, "Outbox message should exist");
+    assertPayloadObject(outboxMessage.payload);
 
     assert.equal(outboxMessage.aggregateId, ticket.id);
     assert.equal(outboxMessage.eventType, TicketEventType.DELETED);
@@ -216,8 +236,10 @@ describe("tickets", () => {
     assert.equal(res.body.message, `Ticket with id ${missingId} not found`);
 
     const db = getDb();
-    const messages = await db.outbox.findMany({ where: { aggregateId: missingId } });
+    const messages = await db.outbox.findMany({
+      where: { aggregateId: missingId },
+    });
 
     assert.equal(messages.length, 0, "Should not create any outbox messages");
   });
-});}
+});

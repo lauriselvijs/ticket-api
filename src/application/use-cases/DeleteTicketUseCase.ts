@@ -12,11 +12,7 @@ export class DeleteTicketUseCase {
   ) {}
 
   async execute(id: string) {
-    const session = await this.db.startSession();
-
-    try {
-      session.startTransaction();
-
+    await this.db.transaction(async (session) => {
       const ticket = await this.ticketRepository.findById(id);
 
       if (!ticket) {
@@ -30,13 +26,6 @@ export class DeleteTicketUseCase {
       const event = deleteTicketDeletedEvent(ticket);
 
       await this.outboxRepository.create(event, session);
-
-      await session.commitTransaction();
-    } catch (e) {
-      await session.abortTransaction();
-      throw e;
-    } finally {
-      session.endSession();
-    }
+    });
   }
 }

@@ -1,26 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { PrismaClient } from "../../../../generated/prisma/client.ts";
 import { databaseConfig } from "./database.config.ts";
 
-const prismaOptions = {
-  datasources: {
-    db: {
-      url: databaseConfig.url,
-    },
-  },
-};
+const adapter = new PrismaMariaDb(databaseConfig.url);
 
-let prisma: PrismaClient;
-
-if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient(prismaOptions);
-} else {
-  let globalWithPrisma = global as typeof globalThis & {
-    prisma: PrismaClient;
-  };
-  if (!globalWithPrisma.prisma) {
-    globalWithPrisma.prisma = new PrismaClient(prismaOptions);
-  }
-  prisma = globalWithPrisma.prisma;
-}
-
+export const prisma = new PrismaClient({ adapter });
 export default prisma;

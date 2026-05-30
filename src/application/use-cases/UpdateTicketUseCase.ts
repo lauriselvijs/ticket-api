@@ -14,11 +14,7 @@ export class UpdateTicketUseCase {
   ) {}
 
   async execute(id: string, data: UpdateTicketDto): Promise<Ticket> {
-    const session = await this.db.startSession();
-
-    try {
-      session.startTransaction();
-
+    return this.db.transaction(async (session) => {
       const ticket = await this.ticketRepository.findById(id);
 
       if (!ticket) {
@@ -37,14 +33,7 @@ export class UpdateTicketUseCase {
 
       await this.outboxRepository.create(event, session);
 
-      await session.commitTransaction();
-
       return updatedTicket;
-    } catch (e) {
-      await session.abortTransaction();
-      throw e;
-    } finally {
-      session.endSession();
-    }
+    });
   }
 }

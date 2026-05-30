@@ -11,7 +11,6 @@ before(async () => {
 
 beforeEach(async () => {
   const db = getDb();
-  // Clear all tables
   await db.outbox.deleteMany();
   await db.ticket.deleteMany();
 });
