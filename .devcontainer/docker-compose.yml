@@ -10,15 +10,21 @@ services:
     command: sleep infinity
     networks:
       - devnet
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
-    image: mongo:8.0
+    image: mysql:8.0
     restart: unless-stopped
     env_file:
       - ../.env
-    command: ["mongod", "--replSet", "rs0"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 3s
+      retries: 5
     volumes:
-      - mongodb-data:/data/db
+      - mysql-data:/var/lib/mysql
     networks:
       - devnet
 
@@ -35,7 +41,7 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
 
 volumes:
-  mongodb-data:
+  mysql-data:
   rabbitmq_data:
 
 networks:

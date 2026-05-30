@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { StatusCodes } from "http-status-codes";
 import { route } from "../src/presentation/http/routes/util/routes.ts";
 
-import "./setup/mongo.ts";
+import "./setup/db.ts";
 import { createApp } from "../src/app.ts";
 
 const app = createApp();

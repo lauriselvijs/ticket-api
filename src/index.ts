@@ -1,12 +1,14 @@
 import { createApp } from "./app.ts";
-import { connectMongo } from "./infrastructure/db/mongo/mongo.connection.ts";
-import { mongoConfig } from "./infrastructure/db/mongo/mongo.config.ts";
+import {
+  connectDb,
+  closeDb,
+} from "./infrastructure/db/prisma/prisma.connection.ts";
 
 const PORT = Number(process.env.PORT) || 3000;
 
 async function start() {
   try {
-    await connectMongo(mongoConfig.uri);
+    await connectDb();
 
     const app = createApp();
 

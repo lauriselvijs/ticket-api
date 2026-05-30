@@ -5,3 +5,16 @@ npm-debug.log*
 # Environment variables
 .env
 .vscode/
+
+# Prisma
+prisma/dev.db
+prisma/dev.db-journal
+.prisma/
+
+# Build artifacts
+dist/
+build/
+
+# OS
+.DS_Store
+*.log

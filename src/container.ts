@@ -3,14 +3,14 @@ import { DeleteTicketUseCase } from "./application/use-cases/DeleteTicketUseCase
 import GetTicketsUseCase from "./application/use-cases/GetTicketsUseCase.ts";
 import { GetTicketUseCase } from "./application/use-cases/GetTicketUseCase.ts";
 import { UpdateTicketUseCase } from "./application/use-cases/UpdateTicketUseCase.ts";
-import { MongoDbConnection } from "./infrastructure/db/mongo/MongoDbConnection.ts";
-import { MongoOutboxRepository } from "./infrastructure/db/mongo/repositories/MongoOutboxRepository.ts";
-import { MongoTicketRepository } from "./infrastructure/db/mongo/repositories/MongoTicketRepository.ts";
+import { PrismaDbConnection } from "./infrastructure/db/prisma/PrismaDbConnection.ts";
+import { PrismaOutboxRepository } from "./infrastructure/db/prisma/repositories/PrismaOutboxRepository.ts";
+import { PrismaTicketRepository } from "./infrastructure/db/prisma/repositories/PrismaTicketRepository.ts";
 import { TicketController } from "./presentation/http/controllers/ticket.controller.ts";
 
-const ticketRepository = new MongoTicketRepository();
-const outboxRepository = new MongoOutboxRepository();
-const dbConnection = new MongoDbConnection();
+const ticketRepository = new PrismaTicketRepository();
+const outboxRepository = new PrismaOutboxRepository();
+const dbConnection = new PrismaDbConnection();
 
 export const createTicketUseCase = new CreateTicketUseCase(
   ticketRepository,

@@ -1,8 +1,10 @@
 import PublishOutboxEventsUseCase from "../application/use-cases/PublishOutboxEventsUseCase.ts";
 import { RabbitEventBus } from "../infrastructure/messaging/rabbit/RabbitEventBus.ts";
-import { mongoConfig } from "../infrastructure/db/mongo/mongo.config.ts";
-import { connectMongo } from "../infrastructure/db/mongo/mongo.connection.ts";
-import { MongoOutboxRepository } from "../infrastructure/db/mongo/repositories/MongoOutboxRepository.ts";
+import {
+  connectDb,
+  closeDb,
+} from "../infrastructure/db/prisma/prisma.connection.ts";
+import { PrismaOutboxRepository } from "../infrastructure/db/prisma/repositories/PrismaOutboxRepository.ts";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -11,18 +13,20 @@ let running = true;
 process.on("SIGINT", () => {
   console.log("Received SIGINT, stopping outbox worker...");
   running = false;
+  closeDb().catch(console.error);
 });
 
 process.on("SIGTERM", () => {
   console.log("Received SIGTERM, stopping outbox worker...");
   running = false;
+  closeDb().catch(console.error);
 });
 
 async function bootstrap(): Promise<PublishOutboxEventsUseCase> {
-  await connectMongo(mongoConfig.uri);
-  console.log("Mongo connected");
+  await connectDb();
+  console.log("Database connected");
 
-  const outboxRepository = new MongoOutboxRepository();
+  const outboxRepository = new PrismaOutboxRepository();
   const rabbitEventBus = new RabbitEventBus();
 
   return new PublishOutboxEventsUseCase(outboxRepository, rabbitEventBus);

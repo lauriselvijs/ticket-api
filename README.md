@@ -1,6 +1,6 @@
 # Ticket API
 
-A RESTful API for managing tickets, built with Node.js, Express, MongoDB, and RabbitMQ.
+A RESTful API for managing tickets, built with Node.js, Express, MySQL, Prisma ORM, and RabbitMQ.
 
 ## Features
 
@@ -8,12 +8,22 @@ A RESTful API for managing tickets, built with Node.js, Express, MongoDB, and Ra
 - Ticket status management (`open`, `pending`, `closed`)
 - Publishes ticket events to RabbitMQ
 - Health check endpoint
+- Outbox pattern for reliable event publishing
+
+## Tech Stack
+
+- **Runtime:** Node.js v24+
+- **Framework:** Express.js
+- **Database:** MySQL 8.0
+- **ORM:** Prisma
+- **Message Queue:** RabbitMQ
+- **Language:** TypeScript
 
 ## Prerequisites
 
-- Node.js (v14+)
-- npm
-- Docker (for MongoDB and RabbitMQ via devcontainer)
+- Docker (for dev container with MySQL, Prisma, and RabbitMQ)
+- VS Code with Dev Containers extension
+- Or: Node.js v24+, npm, MySQL, and RabbitMQ locally installed
 
 ## Getting Started
 
@@ -40,7 +50,14 @@ cp .env.example .env
 
 ### 4. Run with Dev Container (Recommended)
 
-Open the project in VS Code and reopen in the dev container. This will start MongoDB and RabbitMQ automatically.
+Open the project in VS Code and use the **Dev Containers** extension to reopen in the dev container. This will start MySQL and RabbitMQ automatically and set up the development environment.
+
+First-time setup:
+
+```sh
+npm install
+npx prisma migrate deploy  # or prisma migrate dev for dev mode
+```
 
 ### 5. Start the API
 
@@ -49,6 +66,29 @@ npm start
 ```
 
 The API will be available at `http://localhost:3000`.
+
+### Local Development (without Dev Container)
+
+If running locally without Docker:
+
+```sh
+# Install dependencies
+npm install
+
+# Set up database
+DATABASE_URL="mysql://user:password@localhost:3306/tickets_dev" npx prisma migrate deploy
+
+# Start dev server
+npm run dev
+```
+
+## Database Migrations
+
+Prisma migrations are stored in `/prisma/migrations/`.
+
+- **Create new migration (dev):** `npm run db:migrate:dev`
+- **Apply migrations (production):** `npm run db:migrate`
+- **Generate Prisma client:** `npx prisma generate`
 
 ## API Endpoints
 
@@ -76,12 +116,27 @@ The API will be available at `http://localhost:3000`.
 - `src/domain/ticket/enums/` – Ticket status/event type enums
 - `src/domain/ticket/repositories/` – Ticket repository interface
 - `src/domain/ticket/types/` – Ticket domain types
+- `src/infrastructure/db/prisma/` – Prisma schema, client, connections, and repositories
 - `src/infrastructure/messaging/` – RabbitMQ config and event bus implementation
-- `src/infrastructure/persistence/mongo/` – MongoDB config, models, schemas, mappers
-- `src/infrastructure/repositories/` – MongoDB repositories
 - `src/presentation/http/` – Express config, controllers, errors, middleware, routes, validation
 - `src/workers/` – Background worker (outbox event publisher)
+- `prisma/` – Prisma schema and migration files
 - `tests/` – Integration/functional tests
+
+## Architecture
+
+This project follows **Domain-Driven Design (DDD)** and **Hexagonal Architecture** principles:
+
+- **Domain Layer** (`src/domain/`) – Core business logic, independent of infrastructure
+- **Application Layer** (`src/application/`) – Use cases and business rules
+- **Infrastructure Layer** (`src/infrastructure/`) – Database, messaging, external services
+- **Presentation Layer** (`src/presentation/`) – HTTP controllers and routes
+
+The **Outbox Pattern** ensures reliable event publishing:
+
+1. When a ticket is created/updated/deleted, an outbox event is persisted with the ticket in a transaction
+2. A background worker continuously polls pending outbox events
+3. Published events are marked as completed and can be archived
 
 ## License
 

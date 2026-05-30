@@ -10,16 +10,18 @@
     "outbox:dev": "NODE_ENV=development node  --watch --experimental-transform-types src/workers/outbox.worker.ts",
     "outbox": "NODE_ENV=production node  --experimental-transform-types src/workers/outbox.worker.ts",
     "typecheck": "tsc --noEmit",
-    "test": "NODE_ENV=test MONGO_INITDB_DATABASE=tickets_test node --test --experimental-transform-types tests/**/*.test.ts",
-    "test:watch": "NODE_ENV=test MONGO_INITDB_DATABASE=tickets_test node --test --watch --experimental-transform-types tests/**/*.test.ts"
+    "prisma": "prisma",
+    "db:migrate": "prisma migrate deploy",
+    "db:migrate:dev": "prisma migrate dev",
+    "test": "NODE_ENV=test node --test --experimental-transform-types tests/**/*.test.ts",
+    "test:watch": "NODE_ENV=test node --test --watch --experimental-transform-types tests/**/*.test.ts"
   },
   "license": "ISC",
   "dependencies": {
     "amqplib": "^0.10.9",
     "express": "^5.1",
     "http-status-codes": "^2.3.0",
-    "mongodb": "^6.19.0",
-    "mongoose": "^8.18.1",
+    "@prisma/client": "^5.8.0",
     "supertest": "^7.1.4",
     "zod": "^4.1.5"
   },
@@ -28,6 +30,8 @@
     "@types/express": "^5.0",
     "@types/node": "^24.3.2",
     "@types/supertest": "^6.0.3",
-    "typescript": "^5.9"
+    "typescript": "^5.9",
+    "prisma": "^5.8.0",
+    "mysql2": "^3.6.5"
   }
 }

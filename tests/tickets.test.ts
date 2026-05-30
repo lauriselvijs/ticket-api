@@ -4,17 +4,16 @@ import assert from "node:assert/strict";
 import { TicketStatus } from "../src/domain/ticket/enums/TicketStatus.ts";
 import { StatusCodes } from "http-status-codes";
 import { route } from "../src/presentation/http/routes/util/routes.ts";
-import "./setup/mongo.ts";
-import { Ticket } from "../src/infrastructure/db/mongo/models/ticket.ts";
+import "./setup/db.ts";
+import { getDb } from "../src/infrastructure/db/prisma/prisma.connection.ts";
 import { seedTickets } from "./helpers/seedTickets.ts";
 import { randomUUID } from "node:crypto";
-import { Outbox } from "../src/infrastructure/db/mongo/models/outbox.ts";
 import { TicketEventType } from "../src/domain/ticket/enums/TicketEventType.ts";
 import { OutboxStatus } from "../src/application/enums/OutboxStatus.ts";
 
-if (!process.env.MONGO_INITDB_DATABASE?.includes("test")) {
+if (process.env.NODE_ENV !== "test") {
   throw new Error(
-    `Refusing to run tests: ${process.env.MONGO_INITDB_DATABASE} is not a test database`,
+    `Refusing to run tests: NODE_ENV is not 'test', got '${process.env.NODE_ENV}'`,
   );
 }
 
@@ -82,11 +81,12 @@ describe("tickets", () => {
     assert.equal(created.description, payload.description);
     assert.equal(created.status, TicketStatus.OPEN);
 
-    const ticket = await Ticket.findOne({ id: created.id });
+    const db = getDb();
+    const ticket = await db.ticket.findFirst({ where: { id: created.id } });
     assert.ok(ticket);
     assert.equal(ticket!.title, payload.title);
 
-    const messages = await Outbox.find({ aggregateId: created.id });
+    const messages = await db.outbox.findMany({ where: { aggregateId: created.id } });
 
     assert.equal(
       messages.length,
@@ -127,12 +127,13 @@ describe("tickets", () => {
     assert.equal(res.body.description, updatePayload.description);
     assert.equal(res.body.status, updatePayload.status);
 
-    const updated = await Ticket.findOne({ id: ticket.id });
+    const db = getDb();
+    const updated = await db.ticket.findFirst({ where: { id: ticket.id } });
     assert.ok(updated);
     assert.equal(updated!.title, updatePayload.title);
     assert.equal(updated!.status, updatePayload.status);
 
-    const messages = await Outbox.find({ aggregateId: updated.id });
+    const messages = await db.outbox.findMany({ where: { aggregateId: updated.id } });
 
     assert.equal(
       messages.length,
@@ -165,7 +166,8 @@ describe("tickets", () => {
     assert.equal(res.status, StatusCodes.NOT_FOUND);
     assert.equal(res.body.message, `Ticket with id ${missingId} not found`);
 
-    const messages = await Outbox.find({ aggregateId: missingId });
+    const db = getDb();
+    const messages = await db.outbox.findMany({ where: { aggregateId: missingId } });
 
     assert.equal(messages.length, 0, "Should not create any outbox messages");
   });
@@ -177,13 +179,13 @@ describe("tickets", () => {
 
     assert.equal(res.status, StatusCodes.NO_CONTENT);
 
-    const deletedTicket = await Ticket.findOne({
-      id: ticket.id,
-      deletedAt: null,
+    const db = getDb();
+    const deletedTicket = await db.ticket.findFirst({
+      where: { id: ticket.id, deletedAt: null },
     });
     assert.equal(deletedTicket, null);
 
-    const messages = await Outbox.find({ aggregateId: ticket.id });
+    const messages = await db.outbox.findMany({ where: { aggregateId: ticket.id } });
 
     assert.equal(
       messages.length,
@@ -213,8 +215,9 @@ describe("tickets", () => {
     assert.equal(res.status, StatusCodes.NOT_FOUND);
     assert.equal(res.body.message, `Ticket with id ${missingId} not found`);
 
-    const messages = await Outbox.find({ aggregateId: missingId });
+    const db = getDb();
+    const messages = await db.outbox.findMany({ where: { aggregateId: missingId } });
 
     assert.equal(messages.length, 0, "Should not create any outbox messages");
   });
-});
+});}
