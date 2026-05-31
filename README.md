@@ -9,6 +9,7 @@ A RESTful API for managing tickets, built with Node.js, Express, MySQL, Prisma O
 - Publishes ticket events to RabbitMQ
 - Health check endpoint
 - Outbox pattern for reliable event publishing
+- Choreography saga for publishing ticket lifecycle events
 
 ## Tech Stack
 
@@ -137,6 +138,12 @@ The **Outbox Pattern** ensures reliable event publishing:
 1. When a ticket is created/updated/deleted, an outbox event is persisted with the ticket in a transaction
 2. A background worker continuously polls pending outbox events
 3. Published events are marked as completed and can be archived
+
+The **Choreography Saga** publishes ticket lifecycle events for other services:
+
+1. Ticket create/update/delete use cases mutate the local Ticket aggregate
+2. `TicketLifecycleChoreographySaga` records the corresponding integration event in the outbox in the same database transaction
+3. The outbox worker publishes those events to RabbitMQ so services like Notification API can react independently
 
 ## License
 

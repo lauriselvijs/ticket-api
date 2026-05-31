@@ -2,14 +2,14 @@ import Ticket from "../../domain/ticket/entities/Ticket.ts";
 import type { TicketRepository } from "../../domain/ticket/repositories/TicketRepository.ts";
 import UpdateTicketDto from "../dtos/UpdateTicketDto.ts";
 import NotFoundError from "../errors/NotFoundError.ts";
-import { updateTicketUpdatedEvent } from "../events/ticket/updateTicketUpdatedEvent.ts";
 import type { DbConnection } from "../ports/DbConnection.ts";
-import type { OutboxRepository } from "../ports/OutboxRepository.ts";
+import { TicketEventType } from "../../domain/ticket/enums/TicketEventType.ts";
+import { TicketLifecycleChoreographySaga } from "../sagas/TicketLifecycleChoreographySaga.ts";
 
 export class UpdateTicketUseCase {
   constructor(
     private readonly ticketRepository: TicketRepository,
-    private readonly outboxRepository: OutboxRepository,
+    private readonly ticketLifecycleSaga: TicketLifecycleChoreographySaga,
     private readonly db: DbConnection,
   ) {}
 
@@ -21,7 +21,7 @@ export class UpdateTicketUseCase {
         throw new NotFoundError(`Ticket with id ${id} not found`);
       }
 
-      const updatedTicket = ticket.update(data);
+      ticket.update(data);
 
       const updated = await this.ticketRepository.update(ticket, session);
 
@@ -29,11 +29,13 @@ export class UpdateTicketUseCase {
         throw new NotFoundError("Ticket not found");
       }
 
-      const event = updateTicketUpdatedEvent(updated);
+      await this.ticketLifecycleSaga.record(
+        TicketEventType.UPDATED,
+        updated,
+        session,
+      );
 
-      await this.outboxRepository.create(event, session);
-
-      return updatedTicket;
+      return updated;
     });
   }
 }
