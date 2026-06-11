@@ -1,7 +1,6 @@
 import { createApp } from "./app.ts";
 import {
   connectDb,
-  closeDb,
 } from "./infrastructure/db/prisma/prisma.connection.ts";
 
 const PORT = Number(process.env.PORT) || 3000;
